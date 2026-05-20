@@ -22,7 +22,6 @@ const loginUserInDb=async(payload:ILoginUser)=>{
     const jwtPayload={
         id:user.id,
         name:user.name,
-        email:user.email,
         role:user.role
     }
     const token=jwt.sign(jwtPayload,configuration.jwtAccessTokenSecret as string,{
