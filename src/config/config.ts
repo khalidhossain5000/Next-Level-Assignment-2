@@ -7,6 +7,7 @@ path:path.join(process.cwd(),'.env')
 
 
 const configuration={
-    port:process.env.PORT
+    port:process.env.PORT,
+    connectionString:process.env.DB_CONNECTION_STRING
 }
 export default configuration
