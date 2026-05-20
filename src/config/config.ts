@@ -8,6 +8,7 @@ path:path.join(process.cwd(),'.env')
 
 const configuration={
     port:process.env.PORT,
-    connectionString:process.env.DB_CONNECTION_STRING
+    connectionString:process.env.DB_CONNECTION_STRING,
+    jwtAccessTokenSecret:process.env.JWT_TOKEN_SECRET
 }
 export default configuration
