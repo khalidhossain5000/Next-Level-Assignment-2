@@ -1,5 +1,5 @@
 import { pool } from "../../database";
-import type { IIssues } from "./issue.interface";
+import type { IIssueQueryParams, IIssues } from "./issue.interface";
 
 const createIssuesInDb = async (payload: IIssues, reporter_id: string) => {
   const { title, description, type } = payload;
@@ -16,6 +16,37 @@ const createIssuesInDb = async (payload: IIssues, reporter_id: string) => {
   return result;
 };
 
+//get all issue with query param search
+
+const getIssuesFromDbWithQuery = async (payload: IIssueQueryParams) => {
+  const { sort = "newest", status, type } = payload;
+
+  let queryText = `SELECT * FROM issues WHERE 1=1`;
+  const queryParams: string[] = [];
+
+  if (type) {
+    queryParams.push(type);
+    queryText += ` AND type=$${queryParams.length}`;
+
+  }
+
+  if (status) {
+    queryParams.push(status);
+    queryText += ` AND status=$${queryParams.length}`;
+  }
+
+  if (sort === "oldest") {
+    queryText += ` ORDER BY created_at ASC`;
+  } else {
+    queryText += ` ORDER BY created_at DESC`;
+  }
+
+  const issueResult = await pool.query(queryText, queryParams);
+ 
+  return issueResult;
+};
+
 export const issueServices = {
   createIssuesInDb,
+  getIssuesFromDbWithQuery,
 };

@@ -17,6 +17,35 @@ const createIssue=async(req:Request,res:Response)=>{
     }
 }
 
+
+//get all issue with query search functionality
+
+const getAllIssuesWithQuerySearch=async(req:Request,res:Response)=>{
+
+    try {
+        const result=await issueServices.getIssuesFromDbWithQuery(req.query)
+     console.log('result in issue get controoler',result)
+    } catch (error) {
+        console.log(error,'error in get issues')
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const issueController={
-    createIssue
+    createIssue,
+    getAllIssuesWithQuerySearch
 }
