@@ -24,7 +24,13 @@ const getAllIssuesWithQuerySearch=async(req:Request,res:Response)=>{
 
     try {
         const result=await issueServices.getIssuesFromDbWithQuery(req.query)
-     console.log('result in issue get controoler',result)
+     console.log('result in issue get controoler')
+
+     return res.status(200).json({
+        success:true,
+        message:"data reg",
+        data:result
+     })
     } catch (error) {
         console.log(error,'error in get issues')
     }
