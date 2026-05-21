@@ -11,6 +11,12 @@ router.post("/",authMiddleware("contributor","maintainer"),issueController.creat
 
 router.get("/",issueController.getAllIssuesWithQuerySearch)
 
+//single issue get api public route
+
+router.get("/:id",issueController.getSingleIssue)
 
 
+//update issue only maintainer and own contributor
+
+router.put("/:id",authMiddleware("contributor","maintainer"),)
 export const issueRoute=router
