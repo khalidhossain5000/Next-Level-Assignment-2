@@ -18,5 +18,9 @@ router.get("/:id",issueController.getSingleIssue)
 
 //update issue only maintainer and own contributor
 
-router.put("/:id",authMiddleware("contributor","maintainer"),)
+router.put("/:id",authMiddleware("contributor","maintainer"),issueController.updateIssue)
+
+//delete api only maintainer
+
+router.delete("/:id",authMiddleware("maintainer"),issueController.deleteIssue)
 export const issueRoute=router

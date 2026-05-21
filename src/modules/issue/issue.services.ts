@@ -114,8 +114,70 @@ const getSingleIssue = async (id: string) => {
 
   return finalResult;
 };
+
+//update issue in the db
+
+const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
+  const { title, description, type } = payload;
+  const { id: userId, role } = jwtPayload;
+
+  //check if the issue available on the db or not
+
+  const getAllIssue = await pool.query(
+    `
+  SELECT * FROM issues WHERE id=$1
+  `,
+    [id],
+  );
+
+  if (getAllIssue.rows.length === 0) {
+    throw new Error("Issue is not available"); //404 error
+  }
+  const issue = getAllIssue.rows[0];
+
+  //access finder
+  const isMaintainer = role === "maintainer";
+  const isOwner = userId === issue.reporter_id;
+  const isIssueOpen = issue.status === "open";
+  const hasAccess =
+    isMaintainer || (role === "contributor" && isOwner && isIssueOpen);
+
+  if (!hasAccess) {
+    throw new Error("Forbidden access");
+  }
+  //maintainer role direct access to update
+
+  const result = await pool.query(
+    `
+    UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4 WHERE id=$5
+    RETURNING *
+  `,
+    [title, description, type, "in_progress",id],
+  );
+
+  return result;
+};
+
+
+//DELETE ISSUE
+
+const deleteIssueFromDb=async(id:string)=>{
+  const result=await pool.query(`
+    DELETE FROM issues WHERE id=$1
+  `,[id])
+  return result
+}
+
+
+
+
+
+
+
 export const issueServices = {
   createIssuesInDb,
   getIssuesFromDbWithQuery,
   getSingleIssue,
+  updateIssueInDb,
+  deleteIssueFromDb
 };
