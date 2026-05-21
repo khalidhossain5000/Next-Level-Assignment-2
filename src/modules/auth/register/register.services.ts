@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
-import { pool } from "../../database";
+
 import type { IRegisterUser } from "./register.interface";
+import { pool } from "../../../database";
 
 const createUserInDb = async (payload: IRegisterUser) => {
   const { name, email, password, role = "contributor" } = payload;

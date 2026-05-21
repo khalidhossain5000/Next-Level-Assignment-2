@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
-import { pool } from "../../database";
+
 import type { ILoginUser } from "./login.interface";
 import jwt from "jsonwebtoken"
-import configuration from "../../config/config";
+import { pool } from "../../../database";
+import configuration from "../../../config/config";
+
 const loginUserInDb=async(payload:ILoginUser)=>{
     const {email,password}=payload
     const result=await pool.query(`
