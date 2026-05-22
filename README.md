@@ -289,7 +289,7 @@ Make sure the following environment variables are set in your deployment platfor
 
 ```env
 PORT=5000
-DB_CONNECTION_STRING=your_postgresql_connection_string
+DB_CONNECTION_STRING=your_postgre_sql_connection_string
 JWT_TOKEN_SECRET=your_jwt_secret_key
-BCRYPT_SALT_ROUNDS=10
+BCRYPT_Js_SALT_ROUNDS=10
 ```
