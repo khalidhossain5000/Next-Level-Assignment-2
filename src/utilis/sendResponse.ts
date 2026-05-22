@@ -1,14 +1,7 @@
 import type { Response } from "express";
+import type { TResponseGlobal } from "../types/types";
 
-type TResponse<T> = {
-  statusCode: number;
-  success: boolean;
-  message: string;
-  data?: T;
-  error?: any;
-};
-
-const sendResponse = <T>(res: Response, data: TResponse<T>) => {
+const sendResponse = <T>(res: Response, data: TResponseGlobal<T>) => {
   res.status(data.statusCode).json({
     success: data.success,
     message: data.message,
