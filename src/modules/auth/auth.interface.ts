@@ -4,3 +4,8 @@ export interface IRegisterUser{
     password:string;
     role?:'contributor' | 'maintainer '
 }
+
+export interface ILoginUser{
+    email:string;
+    password:string;
+}

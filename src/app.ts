@@ -1,8 +1,7 @@
 import express, { type Request, type Response } from "express"
-import { registerRoute } from "./modules/auth/register/register.route"
-import { loginRoute } from "./modules/auth/login/login.route"
 import { issueRoute } from "./modules/issue/issue.route"
 import globalErrorHandler from "./utilis/globalErrorHandler"
+import { authRoute } from "./modules/auth/auth.route"
 
 const app=express()
 
@@ -12,13 +11,9 @@ app.get("/",async(req:Request,res:Response)=>{
     res.send("Next level assignment backend server is running")
 })
 
-//sign up realed api here
+//auth realted setup
 
-app.use("/api/auth/signup",registerRoute)
-
-//login realted api here
-app.use("/api/auth/login",loginRoute)
-
+app.use("/api/auth",authRoute)
 
 //issue realted api
 

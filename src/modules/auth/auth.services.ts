@@ -1,9 +1,24 @@
 import bcrypt from "bcryptjs";
-
-import type { ILoginUser } from "./login.interface";
+import { pool } from "../../database";
+import type { ILoginUser, IRegisterUser } from "./auth.interface";
+import configuration from "../../config/config";
 import jwt from "jsonwebtoken"
-import { pool } from "../../../database";
-import configuration from "../../../config/config";
+
+const createUserInDb = async (payload: IRegisterUser) => {
+  const { name, email, password, role = "contributor" } = payload;
+  const hashPassword = await bcrypt.hash(password, 10);
+  const result = await pool.query(
+    `
+            INSERT INTO users(name,email,password,role) VALUES($1,$2,$3,$4)
+            RETURNING * 
+        `,
+    [name, email, hashPassword, role],
+  );
+  return result;
+};
+
+//login user
+
 
 const loginUserInDb=async(payload:ILoginUser)=>{
     const {email,password}=payload
@@ -43,6 +58,7 @@ const loginUserInDb=async(payload:ILoginUser)=>{
 }
 
 
-export const loginServices={
-    loginUserInDb
-}
+export const authServices = {
+  createUserInDb,
+  loginUserInDb
+};
