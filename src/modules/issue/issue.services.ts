@@ -165,6 +165,10 @@ const deleteIssueFromDb=async(id:string)=>{
   const result=await pool.query(`
     DELETE FROM issues WHERE id=$1
   `,[id])
+  console.log(result,'dlete resutl')
+    if (result.rows.length === 0) {
+    throw new Error("Issue not found");
+  }
   return result
 }
 

@@ -78,7 +78,7 @@ const deleteIssue=async(req:Request,res:Response)=>{
 try {
   const {id}=req.params
   const result=await issueServices.deleteIssueFromDb(id as string)
-  console.log(result,'delete result')
+ console.log(result,'this is delte reuslt');
   res.status(200).json({
     success:true,
     message:"Deletion successfull"
