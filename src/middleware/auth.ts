@@ -46,7 +46,6 @@ const authMiddleware = (...roles: string[]) => {
       req.user = decoded;
       next();
     } catch (error) {
-      console.log(error, "error in auth middleware");
       next(error);
     }
   };

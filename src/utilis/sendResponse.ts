@@ -6,7 +6,6 @@ const sendResponse = <T>(res: Response, data: TResponseGlobal<T>) => {
     success: data.success,
     message: data.message,
     data: data.data,
-    errors: data.error,
   });
 };
 

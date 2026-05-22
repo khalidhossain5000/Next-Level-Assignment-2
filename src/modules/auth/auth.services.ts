@@ -13,9 +13,7 @@ const createUserInDb = async (payload: IRegisterUser) => {
             RETURNING * 
         `,
     [name, email, hashPassword, role],
-   
   );
-   console.log(result,'this is create user isgn up error')
   return result;
 };
 
@@ -41,7 +39,7 @@ const loginUserInDb = async (payload: ILoginUser) => {
       "Invalid login credentials! Check email or password and try again",
     );
   }
-  //now here password and user both are valid now lets generate token
+  //now password and user both are valid now lets generate token
   const jwtPayload = {
     id: user.id,
     name: user.name,

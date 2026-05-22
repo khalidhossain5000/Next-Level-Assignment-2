@@ -43,6 +43,8 @@ const getIssuesFromDbWithQuery = async (payload: IIssueQueryParams) => {
   const issueResult = await pool.query(queryText, queryParams);
   const finalAllIssues = issueResult.rows;
 
+
+  if(issueResult.rows.length===0) return []
   //get reporter details as well who reporeted that report
 
   const getReporterUniqueId = [
@@ -152,36 +154,32 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
     UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4 WHERE id=$5
     RETURNING *
   `,
-    [title, description, type, "in_progress",id],
+    [title, description, type, "in_progress", id],
   );
 
   return result;
 };
 
-
 //DELETE ISSUE
 
-const deleteIssueFromDb=async(id:string)=>{
-  const result=await pool.query(`
+const deleteIssueFromDb = async (id: string) => {
+  const result = await pool.query(
+    `
     DELETE FROM issues WHERE id=$1
-  `,[id])
-  console.log(result,'dlete resutl')
-    if (result.rows.length === 0) {
+  `,
+    [id],
+  );
+  console.log(result, "dlete resutl");
+  if (result.rows.length === 0) {
     throw new Error("Issue not found");
   }
-  return result
-}
-
-
-
-
-
-
+  return result;
+};
 
 export const issueServices = {
   createIssuesInDb,
   getIssuesFromDbWithQuery,
   getSingleIssue,
   updateIssueInDb,
-  deleteIssueFromDb
+  deleteIssueFromDb,
 };
