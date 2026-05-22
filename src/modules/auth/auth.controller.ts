@@ -11,8 +11,12 @@ const registerUser=async(req:Request,res:Response)=>{
             message:"User registered successfully",
             data:result.rows[0]
         })
-    } catch (error) {
-        console.log(error,'error in sign up controller')
+    } catch (error:any) {
+        res.status(500).json({
+            errors:error.message,
+            message:"regisete rerror"
+        })
+        console.log(error,'error in sign up controller',error.code,error.message)
     }
 }
 
