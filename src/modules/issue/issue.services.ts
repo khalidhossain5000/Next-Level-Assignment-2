@@ -141,14 +141,18 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
   const isMaintainer = role === "maintainer";
   const isOwner = userId === issue.reporter_id;
   const isIssueOpen = issue.status === "open";
-  const hasAccess =
-    isMaintainer || (role === "contributor" && isOwner && isIssueOpen);
+  const hasAccess =isMaintainer || (role === "contributor" && isOwner && isIssueOpen);
 
   if (!hasAccess) {
-    throw new Error("Forbidden access");
+   if(!isOwner){
+     throw new Error("Forbidden access ! Dont have permission to update it");
+   }
+   else{
+    throw new Error("Cant't update issue is not open")
+   }
   }
   //maintainer role direct access to update
-
+console.log("hello")
   const result = await pool.query(
     `
     UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4 WHERE id=$5
@@ -166,10 +170,11 @@ const deleteIssueFromDb = async (id: string) => {
   const result = await pool.query(
     `
     DELETE FROM issues WHERE id=$1
+    RETURNING *
   `,
     [id],
   );
-  console.log(result, "dlete resutl");
+ 
   if (result.rows.length === 0) {
     throw new Error("Issue not found");
   }

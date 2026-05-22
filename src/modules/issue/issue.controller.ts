@@ -56,13 +56,19 @@ const getSingleIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const result = await issueServices.getSingleIssue(id as string);
-    return res.status(200).json({
+      return sendResponse(res, {
+      statusCode: 200,
       success: true,
-      message: "data reg",
+      message: "Issue Retrived Successfully",
       data: result,
     });
-  } catch (error) {
-    console.log(error, "thisi s esingle error");
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
@@ -77,13 +83,20 @@ const updateIssue = async (req: Request, res: Response) => {
       req.user as JwtPayload,
       req.body,
     );
-    return res.status(201).json({
+      return sendResponse(res, {
+      statusCode: 200,
       success: true,
-      message: "updated data reg",
+      message: "Issue updated successfully",
       data: result.rows[0],
     });
-  } catch (error) {
-    console.log(error, "update error");
+  } catch (error: any) {
+   
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
@@ -93,13 +106,19 @@ const deleteIssue = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = await issueServices.deleteIssueFromDb(id as string);
-    console.log(result, "this is delte reuslt");
-    res.status(200).json({
+    return sendResponse(res, {
+      statusCode: 200,
       success: true,
-      message: "Deletion successfull",
+      message: "Issue deleted successfully",
+      data: result.rows[0],
     });
-  } catch (error) {
-    console.log(error, "error while delete");
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
