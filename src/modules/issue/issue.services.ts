@@ -43,8 +43,7 @@ const getIssuesFromDbWithQuery = async (payload: IIssueQueryParams) => {
   const issueResult = await pool.query(queryText, queryParams);
   const finalAllIssues = issueResult.rows;
 
-
-  if(issueResult.rows.length===0) return []
+  if (issueResult.rows.length === 0) return [];
   //get reporter details as well who reporeted that report
 
   const getReporterUniqueId = [
@@ -120,7 +119,7 @@ const getSingleIssue = async (id: string) => {
 //update issue in the db
 
 const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
-  const { title, description, type } = payload;
+  const { title, description, type, status } = payload;
   const { id: userId, role } = jwtPayload;
 
   //check if the issue available on the db or not
@@ -141,24 +140,30 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
   const isMaintainer = role === "maintainer";
   const isOwner = userId === issue.reporter_id;
   const isIssueOpen = issue.status === "open";
-  const hasAccess =isMaintainer || (role === "contributor" && isOwner && isIssueOpen);
+  const hasAccess =
+    isMaintainer || (role === "contributor" && isOwner && isIssueOpen);
 
   if (!hasAccess) {
-   if(!isOwner){
-     throw new Error("Forbidden access ! Dont have permission to update it");
-   }
-   else{
-    throw new Error("Cant't update issue is not open")
-   }
+    if (!isOwner) {
+      throw new Error("Forbidden access ! Dont have permission to update it");
+    } else {
+      throw new Error("Cant't update issue is not open");
+    }
   }
-  //maintainer role direct access to update
-console.log("hello")
+  
+  //maintainer role direct access to update updating status only for maintainer
+  let finalStatus = "in_progress";
+
+  //if maintainer send status that will update the status
+  if (isMaintainer && status) {
+    finalStatus = status;
+  }
   const result = await pool.query(
     `
     UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4 WHERE id=$5
     RETURNING *
   `,
-    [title, description, type, "in_progress", id],
+    [title, description, type, finalStatus, id],
   );
 
   return result;
@@ -174,7 +179,7 @@ const deleteIssueFromDb = async (id: string) => {
   `,
     [id],
   );
- 
+
   if (result.rows.length === 0) {
     throw new Error("Issue not found");
   }

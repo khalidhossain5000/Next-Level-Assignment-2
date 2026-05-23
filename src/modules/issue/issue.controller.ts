@@ -110,7 +110,6 @@ const deleteIssue = async (req: Request, res: Response) => {
       statusCode: 200,
       success: true,
       message: "Issue deleted successfully",
-      data: result.rows[0],
     });
   } catch (error: any) {
     sendResponse(res, {
