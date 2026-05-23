@@ -37,10 +37,11 @@ const authMiddleware = (...roles: string[]) => {
       }
       //now check role and add role base protection
       if (roles.length && !roles.includes(decoded.role)) {
-        res.status(403).json({
+        return res.status(403).json({
           success: false,
           message: "Forbidden access ! Invalid user role",
         });
+        
       }
 
       req.user = decoded;
