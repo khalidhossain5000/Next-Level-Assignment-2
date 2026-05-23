@@ -14,9 +14,9 @@ const registerUser = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     sendResponse(res, {
-      statusCode: 500,
+      statusCode:error.statusCode || 500,
       success: false,
-      message: "Something went wrong!!!!!",
+      message: error.statusCode ? error.message : "Something went wrong!",
       error: error.message,
     });
   }
@@ -35,9 +35,9 @@ const loginUser = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     sendResponse(res, {
-      statusCode: 500,
+      statusCode:error.statusCode || 500,
       success: false,
-      message: "Something went wrong!!!!!",
+      message: error.statusCode ? error.message : "Something went wrong!",
       error: error.message,
     });
   }

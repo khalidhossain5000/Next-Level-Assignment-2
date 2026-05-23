@@ -4,7 +4,6 @@ import type { JwtPayload } from "jsonwebtoken";
 import sendResponse from "../../utilis/sendResponse";
 import issueFilterValidation from "../../utilis/issueFilterValidation";
 
-
 const createIssue = async (req: Request, res: Response) => {
   try {
     const { id } = req.user as JwtPayload;
@@ -31,7 +30,7 @@ const createIssue = async (req: Request, res: Response) => {
 const getAllIssuesWithQuerySearch = async (req: Request, res: Response) => {
   try {
     //query validation
-    issueFilterValidation(res,req.query)
+    issueFilterValidation(res, req.query);
     //get all data result from services
     const result = await issueServices.getIssuesFromDbWithQuery(req.query);
 
@@ -56,7 +55,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const result = await issueServices.getSingleIssue(id as string);
-      return sendResponse(res, {
+    return sendResponse(res, {
       statusCode: 200,
       success: true,
       message: "Issue Retrived Successfully",
@@ -64,9 +63,9 @@ const getSingleIssue = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     sendResponse(res, {
-      statusCode: 500,
+      statusCode: error.statusCode || 500,
       success: false,
-      message: "Something went wrong",
+      message: error.statusCode ? error.message : "Something went wrong",
       error: error.message,
     });
   }
@@ -83,14 +82,13 @@ const updateIssue = async (req: Request, res: Response) => {
       req.user as JwtPayload,
       req.body,
     );
-      return sendResponse(res, {
+    return sendResponse(res, {
       statusCode: 200,
       success: true,
       message: "Issue updated successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-   
     sendResponse(res, {
       statusCode: 500,
       success: false,

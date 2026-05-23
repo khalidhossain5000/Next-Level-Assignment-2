@@ -94,7 +94,11 @@ const getSingleIssue = async (id: string) => {
     [numberId],
   );
   if(result.rows.length===0){
-    throw new Error("Issue not found")
+    throw{
+      statusCode:404,
+      message:"Issue not found"
+    }
+   
   }
 
 

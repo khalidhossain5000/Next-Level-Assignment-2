@@ -18,7 +18,6 @@ const main = async () => {
             updated_at TIMESTAMP DEFAULT NOW()
             )
         `);
-        //issues TABLE CREATE HERE
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS issues(
