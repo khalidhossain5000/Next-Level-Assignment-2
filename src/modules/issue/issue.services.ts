@@ -4,10 +4,14 @@ import type { IIssueQueryParams, IIssues } from "./issue.interface";
 const createIssuesInDb = async (payload: IIssues, reporter_id: string) => {
   const { title, description, type } = payload;
 
-    const validType=["bug","feature_request"]
-    if(!validType.includes(type)){
-      throw new Error("Invalid issue type must be : bug or feature_request")
-    }
+  const validType = ["bug", "feature_request"];
+  if (!validType.includes(type)) {
+    // throw new Error("Invalid issue type must be : bug or feature_request");
+    throw {
+      statusCode: 400,
+      message: "Invalid issue type. must be: bug or feature_request"
+    };
+  }
   //insert this info in the issues table
 
   const result = await pool.query(
@@ -93,14 +97,12 @@ const getSingleIssue = async (id: string) => {
   `,
     [numberId],
   );
-  if(result.rows.length===0){
-    throw{
-      statusCode:404,
-      message:"Issue not found"
-    }
-   
+  if (result.rows.length === 0) {
+    throw {
+      statusCode: 404,
+      message: "Issue not found",
+    };
   }
-
 
   const issueData = result.rows[0];
 
@@ -144,7 +146,11 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
   );
 
   if (getAllIssue.rows.length === 0) {
-    throw new Error("Issue is not available"); //404 error
+    throw {
+      statusCode: 404,
+      message: "Issue not found",
+    };
+   
   }
   const issue = getAllIssue.rows[0];
 
@@ -157,12 +163,19 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
 
   if (!hasAccess) {
     if (!isOwner) {
-      throw new Error("Forbidden access ! Dont have permission to update it");
+      throw {
+      statusCode: 403,
+      message: "Forbidden access ! Dont have permission to update it",
+    };
+      
     } else {
-      throw new Error("Cant't update issue is not open");
+       throw {
+      statusCode: 403,
+      message: "Cant't update issue is not open",
+    };
     }
   }
-  
+
   //maintainer role direct access to update updating status only for maintainer
   let finalStatus = "in_progress";
 
@@ -194,7 +207,11 @@ const deleteIssueFromDb = async (id: string) => {
   );
 
   if (result.rows.length === 0) {
-    throw new Error("Issue not found");
+    throw {
+      statusCode: 404,
+      message: "Issue not found",
+    };
+   
   }
   return result;
 };
