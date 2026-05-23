@@ -4,6 +4,10 @@ import type { IIssueQueryParams, IIssues } from "./issue.interface";
 const createIssuesInDb = async (payload: IIssues, reporter_id: string) => {
   const { title, description, type } = payload;
 
+    const validType=["bug","feature_request"]
+    if(!validType.includes(type)){
+      throw new Error("Invalid issue type must be : bug or feature_request")
+    }
   //insert this info in the issues table
 
   const result = await pool.query(
@@ -89,6 +93,10 @@ const getSingleIssue = async (id: string) => {
   `,
     [numberId],
   );
+  if(result.rows.length===0){
+    throw new Error("Issue not found")
+  }
+
 
   const issueData = result.rows[0];
 
@@ -160,7 +168,8 @@ const updateIssueInDb = async (id: string, jwtPayload: any, payload: any) => {
   }
   const result = await pool.query(
     `
-    UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4 WHERE id=$5
+    UPDATE issues  SET title=COALESCE($1,title),description=COALESCE($2,description), type=COALESCE($3,type),status=$4,updated_at = NOW()
+    WHERE id=$5
     RETURNING *
   `,
     [title, description, type, finalStatus, id],
